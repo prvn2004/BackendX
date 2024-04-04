@@ -22,6 +22,7 @@ app.get('/', (req, res) => {
 app.use('/user', userRoutes);
 app.use('/chat', require('./routes/chatRoutes'));
 app.use('/message', require('./routes/messageRoutes'));
+app.use('/oauth2code', require('./routes/authCodeRoutes'));
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);

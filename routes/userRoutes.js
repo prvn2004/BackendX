@@ -8,18 +8,22 @@
 
 const express = require('express');
 const router = express.Router();
-const User = require('../models/userModel');
+const User = require('../models/UserModel');
 
 router.use(express.json());
 
 router.post('/', async (req, res) => {
-    try {
-        console.log(req.body);
-        const newUser = await User.create(req.body);
-        res.status(201).json(newUser);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+  try {
+    console.log(req.body);
+    const existingUser = await User.findOne({ useremail: req.body.useremail });
+    if (existingUser) {
+      return res.status(201).json(existingUser);
     }
+    const newUser = await User.create(req.body);
+    res.status(201).json(newUser);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Get all users
@@ -33,9 +37,9 @@ router.post('/', async (req, res) => {
 // });
 
 // Get a single user by ID
-router.get('/:id', async (req, res) => {
+router.get('/:participantId', async (req, res) => {
   try {
-    const user = await User.findById({_id: req.params.id});
+    const user = await User.findOne({ useruid: req.params.participantId });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -45,15 +49,15 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// Update a user by ID
-router.put('/:id', async (req, res) => {
+// Update a user by participantId
+router.put('/:participantId', async (req, res) => {
   try {
-    const { id } = req.params;
+    const { participantId } = req.params;
     const { body } = req;
 
-    console.log(id, body);
+    console.log(participantId, body);
 
-    const updatedUser = await User.findByIdAndUpdate(id, body, { new: true });
+    const updatedUser = await User.findOneAndUpdate({ useruid: participantId }, body, { new: true });
 
     if (!updatedUser) {
       return res.status(404).json({ message: 'User not found' });
@@ -65,10 +69,10 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// Delete a user by ID
-router.delete('/:id', async (req, res) => {
+// Delete a user by participantId
+router.delete('/:participantId', async (req, res) => {
   try {
-    const deletedUser = await User.findByIdAndDelete(req.params.id);
+    const deletedUser = await User.findOneAndDelete({ useruid: req.params.participantId });
     if (!deletedUser) {
       return res.status(404).json({ message: 'User not found' });
     }

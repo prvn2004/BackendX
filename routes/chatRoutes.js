@@ -1,20 +1,20 @@
 const express = require('express');
 const router = express.Router();
 const Chat = require('../models/chatModel');
-const User = require('../models/userModel');
+const User = require('../models/UserModel');
 
 router.use(express.json());
 
 
-// Create a chat
+// Create a chat by useruid
 router.post('/', async (req, res) => {
   try {
     const participantId = req.body.participantId;
-    const user = await User.findById({_id: participantId});
+    const user = await User.findOne({ useruid: participantId });
     if (!user) return res.status(404).json({ message: 'User not found' });
 
     const newChat = new Chat({
-      participant: user,
+      participant: user._id,
       // Add other properties of the chat here
     });
 
@@ -30,7 +30,11 @@ router.post('/', async (req, res) => {
 // Get all chats by participant ID
 router.get('/:participantId', async (req, res) => {
   try {
-    const chats = await Chat.find({ participant: req.params.participantId });
+    const participantId = req.params.participantId;
+    const user = await User.findOne({ useruid: participantId });
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    const chats = await Chat.find({ participant: user._id });
     res.json(chats);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -40,7 +44,7 @@ router.get('/:participantId', async (req, res) => {
 // Get a chat by ID
 router.get('/:id', async (req, res) => {
   try {
-    const chat = await Chat.findById(req.params.id);
+    const chat = await Chat.findById({_id: req.params.id});
     if (!chat) return res.status(404).json({ message: 'Chat not found' });
     res.json(chat);
   } catch (err) {
