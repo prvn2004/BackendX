@@ -3,11 +3,11 @@ const mongoose = require('mongoose');
 const tokenSchema = new mongoose.Schema({
     _id: {type: mongoose.Schema.Types.ObjectId, auto: true},
     accessToken: {
-        type: String,
-        required: true
+        type: String
     },
     refreshToken: {
-        type: String
+        type: String,
+        required: true
     },
     timestamp: {
         type: Date,
@@ -15,9 +15,7 @@ const tokenSchema = new mongoose.Schema({
     },
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true,
-        unique: true
+        ref: 'User'
     }
 });
 

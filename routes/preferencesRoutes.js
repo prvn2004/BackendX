@@ -1,76 +1,141 @@
-// const express = require('express');
-// const preferenceModel = require('../models/preferenceModel');
+const express = require('express');
+const preferenceModel = require('../models/preferencesModel');
 
-// const router = express.Router();
-// router.use(express.json());
+const router = express.Router();
+router.use(express.json());
+const userModel = require('../models/UserModel');
 
-// // Create new preference
-// router.post('/', (req, res) => {
-//     const newPreference = req.body;
-//     preferenceModel.create(newPreference)
-//         .then((createdPreference) => {
-//             res.status(201).json(createdPreference);
-//         })
-//         .catch((error) => {
-//             res.status(500).json({ error: 'Failed to create preference' });
-//         });
-// });
 
-// // Get preferences by participantId
-// router.get('/:participantId', async (req, res) => {
-//     try {
-//         const participantId = req.params.participantId;
-//         const user = await userModel.findOne({ useruid : participantId });
-//         if (user) {
-//             const preferences = await preferenceModel.findOne({ user: user._id });
-//             if (preferences) {
-//                 res.status(200).json(preferences);
-//             } else {
-//                 res.status(404).json({ error: 'Preferences not found' });
-//             }
-//         } else {
-//             res.status(404).json({ error: 'User not found' });
-//         }
-//     } catch (error) {
-//         res.status(500).json({ error: 'Failed to get user or preferences' });
-//     }
-// });
+// Save all preferences at once using participantId
+router.post('/addmanypreferences/:participantId', async (req, res) => {
+    try {
+        const participantId = req.params.participantId;
+        const newPreference = req.body;
+        const user = await userModel.findOne({ useruid: participantId }).exec();
+        if (user) {
+            const preferences = await preferenceModel.findOne({ user: user._id }).exec();
+            if (preferences) {
+                newPreference.preferences.forEach((preference) => {
+                    const existingPreference = preferences.preferences.find(p => p.valueName === preference.valueName);
+                    if (existingPreference) {
+                        existingPreference.value = preference.value;
+                    } else {
+                        preferences.preferences.push(preference);
+                    }
+                });
+                await preferences.save();
+                console.log('Updated Preferences:', preferences);
+                res.status(200).json(preferences);
+            } else {
+                const newPreferences = new preferenceModel({ user: user._id, preferences: newPreference });
+                await newPreferences.save();
+                console.log('Created Preferences:', newPreferences);
+                res.status(201).json(newPreferences);
+            }
+        } else {
+            res.status(404).json({ error: 'User not found' });
+        }
+    } catch (error) {
+        console.log('Error:', error);
+        res.status(500).json({ error: 'Failed to add preferences' });
+    }
+});
 
-// // Add preference to model class using participantId
-// router.post('/:participantId', (req, res) => {
-//     const participantId = req.params.participantId;
-//     const newPreference = req.body;
-//     preferenceModel.findOneAndUpdate({ participantId }, newPreference, { new: true })
-//         .then((updatedPreference) => {
-//             if (updatedPreference) {
-//                 res.status(200).json(updatedPreference);
-//             } else {
-//                 res.status(404).json({ error: 'Preference not found' });
-//             }
-//         })
-//         .catch((error) => {
-//             res.status(500).json({ error: 'Failed to add preference' });
-//         });
-// });
+// Get all preferences using participantId
+router.get('/getallpreferences/:participantId', async (req, res) => {
+    try {
+        const participantId = req.params.participantId;
+        const user = await userModel.findOne({ useruid : participantId }).exec();
+        if (user) {
+            const preferences = await preferenceModel.findOne({ user: user._id }).exec();
+            if (preferences) {
+                res.status(200).json(preferences);
+            } else {
+                res.status(404).json({ error: 'Preferences not found' });
+            }
+        } else {
+            res.status(404).json({ error: 'User not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to get user or preferences' });
+    }
+});
 
-// // Update preference using participantId
-// router.put('/preferences/:participantId', (req, res) => {
-//     const participantId = req.params.participantId;
-//     const updatedPreference = req.body;
-//     preferenceModel.findOneAndUpdate({ participantId }, updatedPreference, { new: true })
-//         .then((updatedPreference) => {
-//             if (updatedPreference) {
-//                 res.status(200).json(updatedPreference);
-//             } else {
-//                 res.status(404).json({ error: 'Preference not found' });
-//             }
-//         })
-//         .catch((error) => {
-//             res.status(500).json({ error: 'Failed to update preference' });
-//         });
-// });
+//update preference using preferenceId and participantId
+router.post('/updatepreference/:participantId/:preferenceId', async (req, res) => {
+    try {
+        const participantId = req.params.participantId;
+        const newPreference = req.body;
+        const user = await userModel.findOne({ useruid: participantId }).exec();
+        if (user) {
+            const preferenceId = req.params.preferenceId;
+            const preferences = await preferenceModel.findOne({ user: user._id }).exec();
+            console.log('Preferences:', preferences);
+            if (preferences) {
+                const preference = preferences.preferences.find(p => p._id.toString() === preferenceId);
+                console.log('Preference:', preference);
+                if (preference) {
+                    preference.preferenceName = newPreference.preferenceName;
+                    preference.valueName = newPreference.valueName;
+                    preference.value = newPreference.value;
+                    await preferences.save();
+                    console.log('Updated Preference:', preferences);
+                    res.status(200).json(preference);
+                } else {
+                    preferences.preferences.push(newPreference);
+                    await preferences.save();
+                    console.log('Added Preference:', newPreference);
+                    res.status(201).json(preferences);
+                }
+            } else {
+                const newPreferences = new preferenceModel({ user: user._id, preferences: [newPreference] });
+                await newPreferences.save();
+                console.log('Created Preferences:', newPreferences);
+                res.status(201).json(newPreferences);
+            }
+        } else {
+            res.status(404).json({ error: 'User not found' });
+        }
+    } catch (error) {
+        console.log('Error:', error);
+        res.status(500).json({ error: 'Failed to add preference' });
+    }
+});
 
-// // Delete preference using participantId
+// Add one preference into preferences using participantId
+router.post('/addonepreference/:participantId', async (req, res) => {
+    try {
+        const participantId = req.params.participantId;
+        const newPreference = req.body;
+        const user = await userModel.findOne({ useruid: participantId }).exec();
+        if (user) {
+            const preferences = await preferenceModel.findOne({ user: user._id }).exec();
+            if (preferences) {
+                const existingPreference = preferences.preferences.find(p => p.valueName === newPreference.valueName);
+                if (existingPreference) {
+                    existingPreference.value = newPreference.value;
+                } else {
+                    preferences.preferences.push(newPreference);
+                }
+                await preferences.save();
+                console.log('Updated Preferences:', preferences);
+                res.status(200).json(preferences);
+            } else {
+                const newPreferences = new preferenceModel({ user: user._id, preferences: [newPreference] });
+                await newPreferences.save();
+                console.log('Created Preferences:', newPreferences);
+                res.status(201).json(newPreferences);
+            }
+        } else {
+            res.status(404).json({ error: 'User not found' });
+        }
+    } catch (error) {
+        console.log('Error:', error);
+        res.status(500).json({ error: 'Failed to add preference' });
+    }
+});
+
+// Delete preference using participantId
 // router.delete('/preferences/:participantId', (req, res) => {
 //     const participantId = req.params.participantId;
 //     preferenceModel.findOneAndDelete({ participantId })
@@ -86,4 +151,4 @@
 //         });
 // });
 
-// module.exports = router;
+module.exports = router;

@@ -12,10 +12,10 @@ const preferencesSchema = new mongoose.Schema({
     },
     valueName: {
         type: String,
-        required: true,
+        required: true
     },
     value: {
-        type: Boolean,
+        type: String,
         required: true,
     },
 });

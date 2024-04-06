@@ -3,19 +3,51 @@ const router = express.Router();
 const Message = require('../models/messageModel');
 const gemini = require('../controllers/gemini');
 const run = require('../controllers/gemini');
+const UserModel = require('../models/UserModel');
+const preferencesModel = require('../models/preferencesModel');
 
 router.use(express.json());
 
 // Create a message
 router.post('/', async (req, res) => {
   try {
-    console.log(req.body)
-    const newMessage = new Message(req.body);
+
+console.log("New message received: ", req.body.query)
+    const  participantId  = req.body.participantId; 
+    const user = await UserModel.findOne({ useruid: participantId });
+    if(!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    const _id = user._id;
+
+    const newMessage = new Message(req.body.query);
     const savedMessage = await newMessage.save();
 
-    const geminiResponse = await run(req.body);
+    let matchingValueBoolean = false;
 
-    const botMessage = new Message({ chatId: req.body.chatId, content: geminiResponse, isBot: true });
+    const preferences = await preferencesModel.findOne({ user: user._id }).exec();
+    if (!preferences) {
+      return res.status(404).json({ message: 'Preferences not found' });
+    }else{
+      const matchingPreference = preferences.preferences.find(preference => preference.valueName === "current_value");
+      if (!matchingPreference) {
+        matchingValueBoolean = false;
+        console.log("Matching preference not found")
+      }else{
+        const matchingValue = matchingPreference.value;
+        matchingValueBoolean = matchingValue === 'true';
+  
+        console.log("gmail pref: ", matchingValueBoolean)
+      }
+    }
+
+
+    const geminiResponse = await run(req.body.query, matchingValueBoolean, _id);
+    if(!geminiResponse) {
+      return res.status(404).json({ message: 'Gemini response not found' });
+    }
+
+    const botMessage = new Message({ chatId: req.body.query.chatId, content: geminiResponse, isBot: true });
     const savedbotMessage = await botMessage.save();
 
     console.log(savedbotMessage);
