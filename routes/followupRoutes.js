@@ -2,7 +2,7 @@ const express = require('express');
 const {ReferenceModel,
     followupElementModel,
     followupsModel } = require('../models/followupsModel');
-const UserModel = require('../models/UserModel');
+const UserModel = require('../models/userModel');
 const MessageModel = require('../models/messageModel');
 const gmailEmailModel = require('../models/gmailEmailsModel');
 

@@ -3,7 +3,7 @@ const preferenceModel = require('../models/preferencesModel');
 
 const router = express.Router();
 router.use(express.json());
-const userModel = require('../models/UserModel');
+const userModel = require('../models/userModel');
 
 
 // Save all preferences at once using participantId

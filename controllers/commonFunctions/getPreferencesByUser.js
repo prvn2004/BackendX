@@ -1,4 +1,4 @@
-const UserModel = require('../../models/UserModel');
+const UserModel = require('../../models/userModel');
 const preferencesModel = require('../../models/preferencesModel');
 
 async function getPreferencesByUser(userId, desiredPreference) {

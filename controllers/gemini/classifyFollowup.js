@@ -1,5 +1,5 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const UserModel = require('../../models/UserModel');
+const UserModel = require('../../models/userModel');
 const {ReferenceModel, followupElementModel, followupsModel} = require('../../models/followupsModel');
 const gmailEmailsModel = require('../../models/gmailEmailsModel');
 

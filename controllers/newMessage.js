@@ -1,7 +1,7 @@
 const Message = require('../models/messageModel');
 const gemini = require('../controllers/gemini');
 const run = require('../controllers/gemini');
-const UserModel = require('../models/UserModel');
+const UserModel = require('../models/userModel');
 const preferencesModel = require('../models/preferencesModel');
 
 
