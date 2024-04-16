@@ -1,0 +1,11 @@
+const TEXT_MESSAGE = 'TEXT_MESSAGE';
+const QUATATION = 'QUATATION';
+const IMAGE = 'IMAGE';
+const DOCUMENTS = 'DOCUMENTS';
+
+module.exports = {
+    TEXT_MESSAGE,
+    QUATATION,
+    IMAGE,
+    DOCUMENTS
+}

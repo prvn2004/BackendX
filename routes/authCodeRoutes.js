@@ -7,6 +7,8 @@ const AuthCode = require('../models/OAuthModel');
 const getRefreshTokenFromAuthCode = require('../controllers/getRefreshTokenFromAuthCode');
 const getAccessTokenFromRefreshToken = require('../controllers/commonFunctions/getAccessToken');
 const Tokens = require('../models/TokensModel');
+const getPreferencesByUser = require('../controllers/commonFunctions/getPreferencesByUser');
+const getMails = require('../controllers/commonFunctions/getMails');
 
 // Create a new authCode
 router.post('/', async (req, res) => {
@@ -36,7 +38,6 @@ router.post('/', async (req, res) => {
 
         await token.save();
         console.log(refresh_token);
-
 
         console.log("success")
         res.status(201).json(authCode);

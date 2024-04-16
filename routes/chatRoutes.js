@@ -31,10 +31,25 @@ router.post('/', async (req, res) => {
 router.get('/:participantId', async (req, res) => {
   try {
     const participantId = req.params.participantId;
-    const user = await User.findOne({ useruid: participantId });
+    const user = await User.findOne({ useruid: participantId }).exec();
     if (!user) return res.status(404).json({ message: 'User not found' });
 
     const chats = await Chat.find({ participant: user._id });
+    // console.log(chats)
+    res.json(chats);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get recent 3 chats by participant ID
+router.get('/recent/:participantId', async (req, res) => {
+  try {
+    const participantId = req.params.participantId;
+    const user = await User.findOne({ useruid: participantId });
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    const chats = await Chat.find({ participant: user._id }).sort({ timestamp: -1 }).limit(3);
     res.json(chats);
   } catch (err) {
     res.status(500).json({ error: err.message });

@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 
 // Define the main email schema
 const emailSchema = new mongoose.Schema({
-  _id: { type: mongoose.Schema.Types.ObjectId, default: mongoose.Types.ObjectId, auto: true},
+  _id: { type: mongoose.Schema.Types.ObjectId, required: true, auto: true},
   id: { type: String, required: true },
   labelIds: [String],
   to: { type: String, required: true },

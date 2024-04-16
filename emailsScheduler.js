@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const preferencesModel = require('./models/preferencesModel');
 const UserModel = require('./models/UserModel');
 const gmailEmailModel = require('./models/gmailEmailsModel');
+const getPreferencesByUser = require('./controllers/commonFunctions/getPreferencesByUser');
 
 mongoose.connect("mongodb+srv://prvn:prvn2004@mernapp.wh18ryw.mongodb.net/?retryWrites=true&w=majority", {
     useNewUrlParser: true,
@@ -38,27 +39,9 @@ async function getMail() {
           console.log(`Processing user ID: ${userId}`);
         try {
             const user = await UserModel.findById(userId).exec();
-            const preferences = await preferencesModel.findOne({ user: user._id }).exec();
-            if (!preferences) {
-                console.error('Preferences not found for user:', userId);
-                continue;
-            }
-            const isAuthorizedPreference = preferences.preferences.find(preference => preference.valueName === "is_authorized");
-            if (!isAuthorizedPreference) {
-                console.error('is_authorised preference not found for user:', userId);
-                continue;
-            }
-            const isAuthorized = Boolean(isAuthorizedPreference.value);
-            if (!isAuthorized) {
-                console.log(`User ID ${userId} is not authorized. Skipping...`);
-                continue;
-            }
-            // Rest of your code here
-            const intervalPreference = preferences.preferences.find(preference => preference.valueName === "interval");
-            if (!intervalPreference) {
-                console.error('Interval preference not found for user:', userId);
-                continue;
-            }
+
+            const intervalPreference = await getPreferencesByUser(userId, "interval");
+
             const intervalValue = parseInt(intervalPreference.value);
             const endDate = new Date();
             endDate.setDate(endDate.getDate() + 1); // Add 1 day to the endDate
@@ -66,7 +49,13 @@ async function getMail() {
             startDate.setDate(endDate.getDate() - intervalValue);
 
             console.log(startDate.toISOString().split('T')[0], endDate.toISOString().split('T')[0]);
-            await getMails(userId, startDate.toISOString().split('T')[0], endDate.toISOString().split('T')[0]);
+
+            const sDate = startDate.toISOString().split('T')[0]
+            const eDate = endDate.toISOString().split('T')[0]
+            const query = `is:unread after:${sDate} before:${eDate}`
+            // const query = `after:${sDate} before:${eDate}`
+
+            await getMails(userId, user.useruid, query);
             console.log(`Emails sent for user ID: ${userId}`);
         } catch (error) {
             console.error('Error processing user ID:', userId, error);
@@ -74,7 +63,6 @@ async function getMail() {
         }
         }
     
-
         return 'Emails sent successfully';
       } catch (error) {
         // Log the error and continue processing the next job

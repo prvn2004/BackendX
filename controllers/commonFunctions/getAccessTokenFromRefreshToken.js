@@ -11,11 +11,12 @@ async function getAccessTokenFromRefreshToken(refreshToken){
   oAuth2Client.setCredentials({ refresh_token: refreshToken });
 
   return new Promise((resolve, reject) => {
-    oAuth2Client.refreshAccessToken((err, tokens) => {
+    oAuth2Client.getAccessToken((err, tokens) => {
         if (err) {
             reject(err);
         } else {
-            resolve(tokens.access_token);
+          console.log(tokens);
+            resolve(tokens);
         }
     });
 });

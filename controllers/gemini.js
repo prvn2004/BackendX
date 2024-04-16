@@ -22,7 +22,7 @@ async function run(message, isGmail, _id) {
     try {
         const gmailEmails = await GmailEmailsModel.find({ user: _id });
 
-        let mailString = 'These are details of my mails, help me with them: ';
+        let mailString = ' Act as a assistant which provide help regarding summarising emails, i will provide you with email details and you have to answer according to only them : Here are my emails: ';
 
         gmailEmails.forEach((email) => {
             console.log(email.internalDate);
@@ -49,7 +49,7 @@ async function run(message, isGmail, _id) {
     
         const botHistory = {
             role: 'model',
-            parts: [{ text: 'I can help you with these emails' }]
+            parts: [{ text: 'Understood, I will help you like an email assistant' }]
         };
     
         history.push(emailHistory, botHistory);

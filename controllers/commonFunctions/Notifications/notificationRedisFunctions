@@ -1,0 +1,70 @@
+const PendingNotification = require('../../../models/pendingNotifications');
+
+// Import the MongoDB model for pendingNotifications
+
+// Function to get all notifications from MongoDB
+async function getNotifications(_id) {
+    try {
+        // Find notifications by _id
+        const notifications = await PendingNotification.find({ user_id: _id });
+
+        if (notifications.length === 0) {
+            console.log('No notifications found in MongoDB');
+            return { code: 404, message: "No notifications found in MongoDB" };
+        }
+
+        console.log('Notifications retrieved from MongoDB:', notifications);
+
+        // Return the list of notifications
+        return { code: 201, message: notifications };
+    } catch (error) {
+        console.error('Error retrieving notifications from MongoDB:', error);
+        return { code: 500, message: "Error retrieving notifications from MongoDB" };
+    }
+}
+
+// Function to add a notification to pendingNotifications in MongoDB
+async function addNotification(notification) {
+    try {
+        // Create a new instance of PendingNotification model
+        const newNotification = new PendingNotification(notification);
+
+        // Save the notification to MongoDB
+        await newNotification.save();
+
+        console.log('Notification added to MongoDB:', newNotification);
+
+        // Return success message
+        return { code: 201, message: "Notification added to MongoDB" };
+    } catch (error) {
+        console.error('Error adding notification to MongoDB:', error);
+        return { code: 500, message: "Error adding notification to MongoDB" };
+    }
+}
+
+// Function to delete notifications from pendingNotifications in MongoDB
+async function deleteNotifications(_id) {
+    try {
+        // Delete notifications by _id
+        const result = await PendingNotification.deleteMany({ user_id: _id });
+
+        if (result.deletedCount === 0) {
+            console.log('No notifications found in MongoDB');
+            return { code: 404, message: "No notifications found in MongoDB" };
+        }
+
+        console.log('Notifications deleted from MongoDB:', result);
+
+        // Return success message
+        return { code: 200, message: "Notifications deleted from MongoDB" };
+    } catch (error) {
+        console.error('Error deleting notifications from MongoDB:', error);
+        return { code: 500, message: "Error deleting notifications from MongoDB" };
+    }
+}
+
+module.exports = {
+    getNotifications,
+    addNotification,
+    deleteNotifications
+};
