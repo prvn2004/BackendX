@@ -2,7 +2,7 @@ const gmailEmailsModel = require('../../models/gmailEmailsModel');
 const {classifyFollowups, passThroughClassifyMails, shouldFollowuped} = require('../gemini/classifyFollowup');
 const instruction = require('../gemini/instructions');
 const {ReferenceModel,followupElementModel,followupsModel} = require('../../models/followupsModel');
-const UserModel = require('../../models/userModel');
+const UserModel = require('../../userModel');
 const messageModel = require('../../models/messageModel');
 
 const sendNotification = require('../../firebase/sendNotification');

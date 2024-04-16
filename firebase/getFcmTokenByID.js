@@ -1,4 +1,4 @@
-const UserModel = require('../models/userModel');
+const UserModel = require('../userModel');
 const preferencesModel = require('../models/preferencesModel');
 const preferencesNameConstants = require('./preferencesNameConstants');
 const getPreferencesByUser = require('../controllers/commonFunctions/getPreferencesByUser');

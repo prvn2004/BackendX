@@ -1,4 +1,4 @@
-const userModel = require('../models/userModel');
+const userModel = require('../userModel');
 
 async function chatTemplatePlaceholder(type, template, messageData, senderId){
     const userDetailsFetched = await userModel.findOne({useruid: senderId}).exec()

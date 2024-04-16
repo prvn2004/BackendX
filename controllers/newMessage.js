@@ -1,7 +1,7 @@
 const Message = require('../models/messageModel');
 const gemini = require('../controllers/gemini');
 const run = require('../controllers/gemini');
-const UserModel = require('../models/userModel');
+const UserModel = require('../userModel');
 const preferencesModel = require('../models/preferencesModel');
 
 
@@ -40,6 +40,7 @@ async function newMessage(req) {
         
         
             const geminiResponse = await run(reqObj.query, matchingValueBoolean, _id);
+            console.log("Gemini response: ", geminiResponse);
             if(!geminiResponse) {
               return { status: 404, message: {err:'Gemini response not found'} };
             }
@@ -51,6 +52,7 @@ async function newMessage(req) {
         
             return { status: 201, message: savedbotMessage };
           } catch (err) {
+            console.log(err);
             return { status: 500, message: {err: err.message} };
           }
 }

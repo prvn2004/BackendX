@@ -4,7 +4,7 @@ const getMails = require('./controllers/commonFunctions/getMails');
 const getUserIds = require('./controllers/commonFunctions/getUserIds');
 const mongoose = require('mongoose');
 const preferencesModel = require('./models/preferencesModel');
-const UserModel = require('./models/UserModel');
+const UserModel = require('./userModel');
 const gmailEmailModel = require('./models/gmailEmailsModel');
 const getPreferencesByUser = require('./controllers/commonFunctions/getPreferencesByUser');
 

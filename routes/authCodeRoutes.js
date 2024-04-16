@@ -1,5 +1,5 @@
 const express = require('express');
-const User = require('../models/userModel');
+const User = require('../userModel');
 const router = express.Router();
 router.use(express.json());
 const saveRefreshToken = require('../controllers/getRefreshTokenFromAuthCode');

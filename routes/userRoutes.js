@@ -8,7 +8,7 @@
 
 const express = require('express');
 const router = express.Router();
-const User = require('../models/userModel');
+const User = require('../userModel');
 
 router.use(express.json());
 

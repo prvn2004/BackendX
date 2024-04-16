@@ -1,6 +1,6 @@
 const express = require('express');
 const  getMails  = require('../controllers/commonFunctions/testmails');
-const User = require('../models/userModel');
+const User = require('../userModel');
 const getAccessTokenFromRefreshToken = require('../controllers/commonFunctions/getAccessTokenFromRefreshToken');
 const getRefreshToken = require('../controllers/commonFunctions/getRefreshToken');
 const instruction = require('../controllers/gemini/instructions');

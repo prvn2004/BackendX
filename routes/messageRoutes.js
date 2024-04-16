@@ -3,7 +3,7 @@ const router = express.Router();
 const Message = require('../models/messageModel');
 const gemini = require('../controllers/gemini');
 const run = require('../controllers/gemini');
-const UserModel = require('../models/userModel');
+const UserModel = require('../userModel');
 const preferencesModel = require('../models/preferencesModel');
 const ChatModel = require('../models/chatModel');
 
