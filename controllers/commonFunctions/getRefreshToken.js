@@ -1,4 +1,4 @@
-const tokenModel = require('../../models/TokensModel');
+const tokenModel = require('../../models/tokensModel');
 const oauthModel = require('../../models/oauthModel');
 const getRefreshTokenFromAuthCode = require('../getRefreshTokenFromAuthCode');
 

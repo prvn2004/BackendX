@@ -6,7 +6,7 @@ const saveRefreshToken = require('../controllers/getRefreshTokenFromAuthCode');
 const AuthCode = require('../models/oauthModel');
 const getRefreshTokenFromAuthCode = require('../controllers/getRefreshTokenFromAuthCode');
 const getAccessTokenFromRefreshToken = require('../controllers/commonFunctions/getAccessToken');
-const Tokens = require('../models/TokensModel');
+const Tokens = require('../models/tokensModel');
 const getPreferencesByUser = require('../controllers/commonFunctions/getPreferencesByUser');
 const getMails = require('../controllers/commonFunctions/getMails');
 
