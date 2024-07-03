@@ -1,12 +1,12 @@
 const express = require('express');
-const User = require('../models/UserModel');
+const User = require('../models/userModel');
 const router = express.Router();
 router.use(express.json());
 const saveRefreshToken = require('../controllers/getRefreshTokenFromAuthCode');
-const AuthCode = require('../models/OAuthModel');
+const AuthCode = require('../models/oauthModel');
 const getRefreshTokenFromAuthCode = require('../controllers/getRefreshTokenFromAuthCode');
 const getAccessTokenFromRefreshToken = require('../controllers/commonFunctions/getAccessToken');
-const Tokens = require('../models/TokensModel');
+const Tokens = require('../models/tokensModel');
 const getPreferencesByUser = require('../controllers/commonFunctions/getPreferencesByUser');
 const getMails = require('../controllers/commonFunctions/getMails');
 

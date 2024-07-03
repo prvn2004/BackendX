@@ -1,7 +1,7 @@
 const Message = require('../models/messageModel');
 const gemini = require('../controllers/gemini');
 const run = require('../controllers/gemini');
-const UserModel = require('../models/UserModel');
+const userModel = require('../models/userModel');
 const preferencesModel = require('../models/preferencesModel');
 
 
@@ -11,7 +11,7 @@ async function newMessage(req) {
 
         console.log("New message received: ", reqObj.query)
             const  participantId  = reqObj.participantId; 
-            const user = await UserModel.findOne({ useruid: participantId });
+            const user = await userModel.findOne({ useruid: participantId });
             if(!user) {
               return { status: 404, message: {err: 'User not found'} };
             }

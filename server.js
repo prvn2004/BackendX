@@ -24,7 +24,7 @@ mongoose.connect("mongodb+srv://prvn:prvn2004@mernapp.wh18ryw.mongodb.net/?retry
     });
 
 app.get('/', (req, res) => {
-    res.send(200);
+    res.sendStatus(200);
 });
 
 app.use('/user', userRoutes);

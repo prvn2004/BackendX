@@ -1,9 +1,9 @@
-const UserModel = require('../../models/UserModel');
+const userModel = require('../../models/userModel');
 const preferencesModel = require('../../models/preferencesModel');
 
 async function getPreferencesByUser(userId, desiredPreference) {
     try {
-        const user = await UserModel.findById(userId).exec();
+        const user = await userModel.findById(userId).exec();
             const preferences = await preferencesModel.findOne({ user: user._id }).exec();
             if (!preferences) {
                 console.error('Preferences not found for user:', userId);

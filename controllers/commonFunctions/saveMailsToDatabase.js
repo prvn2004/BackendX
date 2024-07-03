@@ -2,7 +2,7 @@ const gmailEmailsModel = require('../../models/gmailEmailsModel');
 const {classifyFollowups, passThroughClassifyMails, shouldFollowuped} = require('../gemini/classifyFollowup');
 const instruction = require('../gemini/instructions');
 const {ReferenceModel,followupElementModel,followupsModel} = require('../../models/followupsModel');
-const UserModel = require('../../models/UserModel');
+const userModel = require('../../models/userModel');
 const messageModel = require('../../models/messageModel');
 
 const sendNotification = require('../../firebase/sendNotification');
@@ -95,8 +95,8 @@ async function saveMessagesToDatabase(message, useruid) {
                         });
                         await newFollowupElement.save();
     
-                        // Get the user _id from UserModel using useruid
-                        const user = await UserModel.findOne({ useruid : useruid }).exec();
+                        // Get the user _id from userModel using useruid
+                        const user = await userModel.findOne({ useruid : useruid }).exec();
                         const userId = user._id;
     
                         // Create a new followup model

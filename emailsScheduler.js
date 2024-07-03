@@ -4,7 +4,7 @@ const getMails = require('./controllers/commonFunctions/getMails');
 const getUserIds = require('./controllers/commonFunctions/getUserIds');
 const mongoose = require('mongoose');
 const preferencesModel = require('./models/preferencesModel');
-const UserModel = require('./models/UserModel');
+const userModel = require('./models/userModel');
 const gmailEmailModel = require('./models/gmailEmailsModel');
 const getPreferencesByUser = require('./controllers/commonFunctions/getPreferencesByUser');
 
@@ -31,14 +31,14 @@ async function getMail() {
     try {
         console.log('recieving emails...');
         // Get all users and create a list of their ids
-        const users = await UserModel.find();
+        const users = await userModel.find();
         const userIds = users.map(user => user._id.toString());
     
         // Iterate over the user IDs and process each one
         for (const userId of userIds) {
           console.log(`Processing user ID: ${userId}`);
         try {
-            const user = await UserModel.findById(userId).exec();
+            const user = await userModel.findById(userId).exec();
 
             const intervalPreference = await getPreferencesByUser(userId, "interval");
 
@@ -82,14 +82,14 @@ async function getMail() {
     
         try {
             // Get all users and create a list of their ids
-            const users = await UserModel.find();
+            const users = await userModel.find();
             const userIds = users.map(user => user._id.toString());
     
             // Iterate over the user IDs and process each one
             for (const userId of userIds) {
                 console.log(`Processing user ID: ${userId}`);
                 try {
-                    const user = await UserModel.findById(userId).exec();
+                    const user = await userModel.findById(userId).exec();
                     const preferences = await preferencesModel.findOne({ user: user._id }).exec();
                     if (!preferences) {
                         console.error('Preferences not found for user:', userId);

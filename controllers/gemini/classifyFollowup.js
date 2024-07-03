@@ -1,5 +1,5 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const UserModel = require('../../models/UserModel');
+const userModel = require('../../models/userModel');
 const {ReferenceModel, followupElementModel, followupsModel} = require('../../models/followupsModel');
 const gmailEmailsModel = require('../../models/gmailEmailsModel');
 
@@ -36,7 +36,7 @@ async function classifyFollowups(email1, email2, instruction){
 
 async function passThroughClassifyMails(email2, instruction, useruid) {
     try {
-        const user = await UserModel.findOne({ useruid: useruid });
+        const user = await userModel.findOne({ useruid: useruid });
 
         const followups = await followupsModel.find({ participant: user._id }).populate({
             path: 'followup_history',

@@ -2,7 +2,7 @@ const express = require('express');
 const {ReferenceModel,
     followupElementModel,
     followupsModel } = require('../models/followupsModel');
-const UserModel = require('../models/UserModel');
+const userModel = require('../models/userModel');
 const MessageModel = require('../models/messageModel');
 const gmailEmailModel = require('../models/gmailEmailsModel');
 
@@ -13,7 +13,7 @@ router.get('/getall/:participantId', async (req, res) => {
     try {
         console.log('GET /getall/:participantId')
         const participantId = req.params.participantId;
-        const user = await UserModel.findOne({ useruid: participantId }).exec();
+        const user = await userModel.findOne({ useruid: participantId }).exec();
         const followupModels = await followupsModel.find({ participant: user._id });
 
     const modifiedFollowupModels = await Promise.all(followupModels.map(async (followup) => {

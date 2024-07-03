@@ -1,8 +1,8 @@
-const UserModel = require('../../models/UserModel');
+const userModel = require('../../models/userModel');
 
 async function getAllUserIds() {
     try {
-        const users = await UserModel.find();
+        const users = await userModel.find();
 
         const userIds = users.map(user => user._id);
 

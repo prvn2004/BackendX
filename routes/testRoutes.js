@@ -1,6 +1,6 @@
 const express = require('express');
 const  getMails  = require('../controllers/commonFunctions/testmails');
-const User = require('../models/UserModel');
+const User = require('../models/userModel');
 const getAccessTokenFromRefreshToken = require('../controllers/commonFunctions/getAccessTokenFromRefreshToken');
 const getRefreshToken = require('../controllers/commonFunctions/getRefreshToken');
 const instruction = require('../controllers/gemini/instructions');
@@ -30,7 +30,7 @@ router.post('/getaccesstoken', async (req, res) => {
     try {
 
         // console.log("new test" + participantId)
-        // Get user from UserModel using participantId
+        // Get user from userModel using participantId
         // const user = await User.findOne({ useruid: req.body.participantId });
 
         // if (!user) {

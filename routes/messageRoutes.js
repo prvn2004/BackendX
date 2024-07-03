@@ -3,7 +3,7 @@ const router = express.Router();
 const Message = require('../models/messageModel');
 const gemini = require('../controllers/gemini');
 const run = require('../controllers/gemini');
-const UserModel = require('../models/UserModel');
+const userModel = require('../models/userModel');
 const preferencesModel = require('../models/preferencesModel');
 const ChatModel = require('../models/chatModel');
 
@@ -14,7 +14,7 @@ router.post('/', async (req, res) => {
   try {
     console.log("New message received: ", req.body.query);
     const participantId = req.body.participantId;
-    const user = await UserModel.findOne({ useruid: participantId });
+    const user = await userModel.findOne({ useruid: participantId });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }

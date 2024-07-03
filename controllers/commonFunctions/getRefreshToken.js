@@ -1,5 +1,5 @@
-const tokenModel = require('../../models/TokensModel');
-const oauthModel = require('../../models/OAuthModel');
+const tokenModel = require('../../models/tokensModel');
+const oauthModel = require('../../models/oauthModel');
 const getRefreshTokenFromAuthCode = require('../getRefreshTokenFromAuthCode');
 
 async function getRefreshToken(_id) {
