@@ -1,5 +1,5 @@
 const { getNotifications, deleteSentNotifications } = require('../Notifications/notificationRedisFunctions');
-const  newMessage  = require('../../../controllers/newMessage');
+const  {newMessage, getAllMessages}  = require('../../../controllers/newMessage');
 
 const connectedUsers = {};
 
@@ -39,6 +39,22 @@ async function initSockets(socket, io) {
             console.log('Error:', error);
         }
     });
+
+    socket.on('getAllMessages', async (chatId) => {
+        console.log('chatId: ' + chatId);
+
+        try {
+            const response = await getAllMessages(chatId);
+            await new Promise((resolve, reject) => {
+                socket.emitWithAck("getAllMessages", response.status, response.messages, { timeout: 10000 }, (ack) => {
+                });
+            });
+        } catch (error) {
+            console.log('Error:', error);
+        }
+    });
+
+
 
     socket.on('disconnect', () => {
         for (const userId in connectedUsers) {

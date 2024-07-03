@@ -10,7 +10,7 @@ const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 
 async function run(message, isGmail, _id) {
     // For text-only input, use the gemini-pro model
-    const model = genAI.getGenerativeModel({ model: "gemini-1.0-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
     // Get the last 30 messages from the message schema using chatId
     const thirtyDaysAgo = moment().subtract(30, 'days'); // Calculate the date 30 days ago
