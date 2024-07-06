@@ -6,11 +6,14 @@ const getRefreshToken = require('../controllers/commonFunctions/getRefreshToken'
 const instruction = require('../controllers/gemini/instructions');
 
 const getRefreshTokenFromAuthCode = require('../controllers/getRefreshTokenFromAuthCode');
+const {processInstruction , passThroughClassifyMails, shouldFollowuped} = require('../controllers/gemini/classifyFollowup');
 
 const sendChatNotification = require('../firebase/sendNotification');
+const {processData} = require('../controllers/gemini/geminiAutomationLib/autmation');
 
 const router = express.Router();
 router.use(express.json());
+
 
 router.post('/mails', (req, res) => {
     const _id = req.body._id;
@@ -90,6 +93,23 @@ router.post('/classifyfollowup', async (req, res) => {
     }
 });
 
+router.post('/shouldfollowuped', async (req, res) => {
+    try {
+        // const emails = req.body.map(obj => obj.email);
+        const emails = req.body
+        const instruct = instruction.DAILY_EMAIL_DIGEST;
+
+        const results = [];
+            const result = await processInstruction(emails, instruct);
+            results.push(result);
+
+        res.send(results);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
 router.post('/getrefreshtoken', async (req, res) => {
     try {
         const authCode = req.body.authCode;
@@ -99,6 +119,19 @@ router.post('/getrefreshtoken', async (req, res) => {
         res.send(refreshToken);
     } catch (error) {
         console.log(JSON.parse(JSON.stringify(error)));
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+router.post('/automation', async (req, res) => {
+    try {
+        const input = req.body.input
+
+        const results = await processData("AUTOMATION_PROMPT", input, null, 0, null);
+
+        res.status(201).send(results);
+    } catch (error) {
+        console.error(error);
         res.status(500).send('Internal Server Error');
     }
 });

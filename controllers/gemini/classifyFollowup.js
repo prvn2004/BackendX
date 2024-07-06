@@ -94,30 +94,31 @@ async function passThroughClassifyMails(email2, instruction, useruid) {
 }
 
 
-async function shouldFollowuped(email, instruction){
-
+async function processInstruction(email, instruction) {
     const message = instruction + " email1 : " + JSON.stringify(email);
 
     console.log(message);
-    const chat = model.startChat()
+    const chat = model.startChat();
 
     const result = await chat.sendMessage(message);
 
     const response = await result.response.text();
 
-    console.log("response recieved from model : ->"+ response);
+    console.log("response received from model : ->" + response);
 
     const responseJson = JSON.parse(response);
     console.log(responseJson);
 
-    if(responseJson){
+    if (responseJson) {
         const stringedResponse = JSON.stringify(responseJson);
-        return {code: 201, response: stringedResponse};
-    }else{
-        console.log("Error in response for classifying")
-        return {code: 404, response: "Error in response for classifying"};
+        return { code: 201, response: stringedResponse };
+    } else {
+        console.log("Error in response for processing instruction");
+        return { code: 404, response: "Error in response for processing instruction" };
     }
 }
 
 
-module.exports =  {classifyFollowups , passThroughClassifyMails, shouldFollowuped};
+
+
+module.exports =  {classifyFollowups , passThroughClassifyMails, processInstruction};
