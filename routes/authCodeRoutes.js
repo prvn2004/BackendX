@@ -15,13 +15,13 @@ router.post('/', async (req, res) => {
     try {
         const user = await User.findOne({ useruid: req.body.user });
         if (!user) {
-            console.log("user not found")
+            //console.log("user not found")
             return res.status(404).json({ error: 'User not found' });
         }
-        console.log(req.body);
+        //console.log(req.body);
         const existingAuthCode = await AuthCode.findOne({ user: user._id });
         if (existingAuthCode) {
-            console.log("auth code already exists");
+            //console.log("auth code already exists");
             return res.status(409).json({ error: 'AuthCode already exists' });
         }
         const authCode = new AuthCode({
@@ -37,9 +37,9 @@ router.post('/', async (req, res) => {
         });
 
         await token.save();
-        console.log(refresh_token);
+        //console.log(refresh_token);
 
-        console.log("success")
+        //console.log("success")
         res.status(201).json(authCode);
     } catch (error) {
         console.error(error);
@@ -50,7 +50,7 @@ router.post('/', async (req, res) => {
 // Get a single authCode by participantId
 router.get('/:participantId', async (req, res) => {
     try {
-        console.log(req.params.participantId);
+        //console.log(req.params.participantId);
         const user = await User.findOne({ useruid: req.params.participantId });
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
@@ -74,7 +74,7 @@ router.put('/:participantId', async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        console.log(user);
+        //console.log(user);
         
         const authCode = await AuthCode.findOneAndUpdate({ user: user._id }, req.body, {
             new: true,

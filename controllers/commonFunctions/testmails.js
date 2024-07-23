@@ -17,13 +17,13 @@ const getMessagesByDate = async (_id, startDate, endDate, outputCsvFilePath) => 
     if (!refreshToken) {
       throw new Error('Failed to get a refresh token');
     }
-    console.log('Refresh Token:', refreshToken);
+    //console.log('Refresh Token:', refreshToken);
 
     const accessToken = await getAccessToken(refreshToken);
     if (!accessToken) {
       throw new Error('Failed to get access token');
     }
-    console.log('Access Token:', accessToken);
+    //console.log('Access Token:', accessToken);
 
     oAuth2Client.setCredentials({
       refresh_token: refreshToken,
@@ -88,13 +88,13 @@ const getMessagesByDate = async (_id, startDate, endDate, outputCsvFilePath) => 
         };
 
         // if (email.labelIds.includes('CATEGORY_PROMOTIONS')) {
-        //   console.log('Skipping saving mail with label CATEGORY_PROMOTIONS');
+        //   //console.log('Skipping saving mail with label CATEGORY_PROMOTIONS');
         //   continue;
         // }
 
-        console.log('To:', to);
-        console.log('From:', from);
-        console.log('Subject:', subject);
+        //console.log('To:', to);
+        //console.log('From:', from);
+        //console.log('Subject:', subject);
 
         // Add email data to CSV array
         csvData.push([email.id, email.from, email.to, email.subject, email.message]);
@@ -110,7 +110,7 @@ const getMessagesByDate = async (_id, startDate, endDate, outputCsvFilePath) => 
     // Write CSV data to file
     fs.writeFileSync(outputCsvFilePath, csvData.map(row => row.join(',')).join('\n'));
 
-    console.log(`CSV data saved to ${outputCsvFilePath}`);
+    //console.log(`CSV data saved to ${outputCsvFilePath}`);
   } catch (error) {
     console.error('Error in getMessagesByDate:', error);
   }

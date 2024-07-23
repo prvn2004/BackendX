@@ -1,10 +1,14 @@
 const { getNotifications, deleteSentNotifications } = require('../Notifications/notificationRedisFunctions');
-const  {newMessage, getAllMessages}  = require('../../../controllers/newMessage');
+const  {newMessage} = require('../../../controllers/newMessage');
+const {getAllMessages} = require('../../../controllers/newMessage');
 const dailyDigest = require('../../../controllers/gemini/DailyDigest');
 
 const connectedUsers = {};
 
+// let ios;
+
 async function initSockets(socket, io) {
+    ios = io;
     socket.on("init", async (_id) => {
         connectedUsers[_id] = socket.id;
 
@@ -14,19 +18,19 @@ async function initSockets(socket, io) {
                 message,
             }, (ack) => {
                 if (ack) {
-                    console.log("Acknowledgement received:", ack);
+                    //console.log("Acknowledgement received:", ack);
                     deleteSentNotifications();
                 } else {
-                    console.log("No acknowledgement received.");
+                    //console.log("No acknowledgement received.");
                 }
             }, 5000);
         } catch (error) {
-            console.log("Error:", error);
+            //console.log("Error:", error);
         }
     });
 
     socket.on('newMessage', async (message) => {
-        console.log('message: ' + message);
+        //console.log('message: ' + message);
 
         try {
             const responsei = await newMessage(message);
@@ -35,12 +39,12 @@ async function initSockets(socket, io) {
                 });
             });
         } catch (error) {
-            console.log('Error:', error);
+            //console.log('Error:', error);
         }
     });
 
     socket.on('getAllMessages', async (chatId) => {
-        console.log('chatId: ' + chatId);
+        //console.log('chatId: ' + chatId);
 
         try {
             const response = await getAllMessages(chatId);
@@ -49,7 +53,7 @@ async function initSockets(socket, io) {
                 });
             });
         } catch (error) {
-            console.log('Error:', error);
+            //console.log('Error:', error);
         }
     });
 
@@ -81,25 +85,25 @@ async function initSockets(socket, io) {
         }
     ];
 
-    socket.on('DailyDigest', async (message) => {
-        console.log('message: ' + message);
+    // socket.on('DailyDigest', async (message) => {
+    //     //console.log('message: ' + message);
 
-        try {
-            const response = await dailyDigest(demoData);
-            const { status, result } = response;
+    //     try {
+    //         const response = await dailyDigest(demoData);
+    //         const { status, result } = response;
 
-            if (status === 500) {
-                console.log('Error:', result);
-            } else if (status === 201) {
-                await new Promise((resolve, reject) => {
-                    socket.emitWithAck("DailyDigest", status, result.response, { timeout: 10000 }, (ack) => {
-                    });
-                });
-            }
-        } catch (error) {
-            console.log('Error:', error);
-        }
-    });
+    //         if (status === 500) {
+    //             //console.log('Error:', result);
+    //         } else if (status === 201) {
+    //             await new Promise((resolve, reject) => {
+    //                 socket.emitWithAck("DailyDigest", status, result.response, { timeout: 10000 }, (ack) => {
+    //                 });
+    //             });
+    //         }
+    //     } catch (error) {
+    //         //console.log('Error:', error);
+    //     }
+    // });
 
 
 
@@ -110,9 +114,37 @@ async function initSockets(socket, io) {
                 break;
             }
         }
-        console.log('user disconnected');
+        //console.log('user disconnected');
     });
 }
+
+// id = 10 for this example
+// async function emitMessage(event_name, _id, message) {
+//     if (!ios || !ios.sockets || !ios.sockets.sockets) {
+//         console.warn("Invalid socket configuration.");
+//         return;
+//     }
+
+//     if (!_id) {
+//         console.warn("Invalid user ID.");
+//         return;
+//     }
+
+//     const socket_id = connectedUsers[_id];
+//     if (!socket_id) {
+//         console.warn(`Socket ID not found for user ID ${_id}.`);
+//         return;
+//     }
+
+//     const socket = ios.sockets.sockets.get(socket_id);
+//     if (!socket) {
+//         console.warn(`Socket with ID ${socket_id} not found.`);
+//         return;
+//     }
+
+//     socket.emit(event_name, message);
+// }
+
 
 module.exports = {initSockets, connectedUsers};
 

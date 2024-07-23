@@ -13,13 +13,13 @@ async function getPreferencesByUser(userId, desiredPreference) {
         // const isAuthorizedPreference = userPreferences.preferences.find(preference => preference.valueName === "is_authorized");
         
         // if (!isAuthorizedPreference) {
-        //     console.log('is_authorized preference not found for user:', userId);
+        //     //console.log('is_authorized preference not found for user:', userId);
         // }
         
         // const isAuthorized = Boolean(isAuthorizedPreference.value);
         
         // if (!isAuthorized) {
-        //     console.log(`User ID ${userId} is not authorized. Skipping...`);
+        //     //console.log(`User ID ${userId} is not authorized. Skipping...`);
         // }
 
         const desiredPreferenceValue = userPreferences.preferences.find(preference => preference.valueName === desiredPreference);

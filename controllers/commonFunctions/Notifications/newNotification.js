@@ -8,10 +8,10 @@ const newNotification = (socket, notification, socket_id) => {
         }, (ack) => {
             try {
                 if (ack) {
-                    console.log("Acknowledgement received:", ack);
+                    //console.log("Acknowledgement received:", ack);
                     resolve(ack);
                 } else {
-                    console.log("No acknowledgement received. Calling deleteFunction...");
+                    //console.log("No acknowledgement received. Calling deleteFunction...");
                     addNotification(notification);
                     resolve();
                 }

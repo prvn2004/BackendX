@@ -11,7 +11,7 @@ async function saveMessagesToDatabase(message, useruid) {
     try {
         const existingMessage = await gmailEmailsModel.findOne({ id: message.id }).exec();
         if (existingMessage) {
-            console.log('Message already exists in the database. Skipping...');
+            //console.log('Message already exists in the database. Skipping...');
             return;
         }
         const newMessage = new gmailEmailsModel(message);
@@ -23,17 +23,17 @@ async function saveMessagesToDatabase(message, useruid) {
         const response = await passThroughClassifyMails(formatedmessage, instruction.ISSAMECLASSIFY, useruid);
 
         if (response.code === 404) {
-            console.log('Error in classifying the message:', response);
+            //console.log('Error in classifying the message:', response);
         }
 
         if (response.code === 201 || response.code === 500 || response.code === 404) {
             let jsonResponse = {isUpdate: false, summary: ""};
             if(response.code ===201){
             jsonResponse = JSON.parse(response.response);
-            console.log("jsonified" + jsonResponse)
+            //console.log("jsonified" + jsonResponse)
             }
             if(jsonResponse.isUpdate === true && response.code === 201){
-                console.log(jsonResponse.isUpdate)
+                //console.log(jsonResponse.isUpdate)
                 const followupModelId = response.followup_id;
                 // Create a new reference element
 
@@ -67,15 +67,15 @@ async function saveMessagesToDatabase(message, useruid) {
             else{
                 const response1 = await shouldFollowuped(formatedmessage, instruction.SHOULD_FOLLOWUP);
 
-                console.log("testing11" + response1);
+                //console.log("testing11" + response1);
     
                 if(response1.code === 201){
                     const jsonResponse = JSON.parse(response1.response);
-                    console.log("jsonified" + jsonResponse)
+                    //console.log("jsonified" + jsonResponse)
     
                     if(jsonResponse.shouldFollowuped === true ){
     
-                        console.log(jsonResponse.shouldFollowuped)
+                        //console.log(jsonResponse.shouldFollowuped)
 
                         const newMessageModel = new messageModel({
                             content: jsonResponse.summary,
@@ -114,7 +114,7 @@ async function saveMessagesToDatabase(message, useruid) {
             }
         }
         
-        console.log('Message saved to database successfully!');
+        //console.log('Message saved to database successfully!');
     } catch (error) {
         console.error('Error saving message to database:', error);
     }

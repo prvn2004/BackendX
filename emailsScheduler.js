@@ -13,7 +13,7 @@ mongoose.connect("mongodb+srv://prvn:prvn2004@mernapp.wh18ryw.mongodb.net/?retry
     useUnifiedTopology: true,
 })
     .then(() => {
-        console.log('Connected to MongoDB');
+        //console.log('Connected to MongoDB');
     })
     .catch((error) => {
         console.error('Failed to connect to MongoDB:', error);
@@ -26,17 +26,17 @@ const agenda = new Agenda({ db: { address: mongoConnectionString} });
 
 // Define your 'getMail' function (replace with your mail fetching logic)
 async function getMail() {
-    console.log('Fetching mail...');
+    //console.log('Fetching mail...');
 
     try {
-        console.log('recieving emails...');
+        //console.log('recieving emails...');
         // Get all users and create a list of their ids
         const users = await userModel.find();
         const userIds = users.map(user => user._id.toString());
     
         // Iterate over the user IDs and process each one
         for (const userId of userIds) {
-          console.log(`Processing user ID: ${userId}`);
+          //console.log(`Processing user ID: ${userId}`);
         try {
             const user = await userModel.findById(userId).exec();
 
@@ -48,7 +48,7 @@ async function getMail() {
             const startDate = new Date();
             startDate.setDate(endDate.getDate() - intervalValue);
 
-            console.log(startDate.toISOString().split('T')[0], endDate.toISOString().split('T')[0]);
+            //console.log(startDate.toISOString().split('T')[0], endDate.toISOString().split('T')[0]);
 
             const sDate = startDate.toISOString().split('T')[0]
             const eDate = endDate.toISOString().split('T')[0]
@@ -56,7 +56,7 @@ async function getMail() {
             // const query = `after:${sDate} before:${eDate}`
 
             await getMails(userId, user.useruid, query);
-            console.log(`Emails sent for user ID: ${userId}`);
+            //console.log(`Emails sent for user ID: ${userId}`);
         } catch (error) {
             console.error('Error processing user ID:', userId, error);
             continue;
@@ -72,13 +72,13 @@ async function getMail() {
 }
 
     agenda.define('getMail', async (job) => {
-    console.log('Job started:', job.attrs.name);
+    //console.log('Job started:', job.attrs.name);
     await getMail();
-    console.log('Job completed:', job.attrs.name);
+    //console.log('Job completed:', job.attrs.name);
     })
 
     agenda.define('deleteOldMails', async (job) => {
-        console.log('Job started:', job.attrs.name);
+        //console.log('Job started:', job.attrs.name);
     
         try {
             // Get all users and create a list of their ids
@@ -87,7 +87,7 @@ async function getMail() {
     
             // Iterate over the user IDs and process each one
             for (const userId of userIds) {
-                console.log(`Processing user ID: ${userId}`);
+                //console.log(`Processing user ID: ${userId}`);
                 try {
                     const user = await userModel.findById(userId).exec();
                     const preferences = await preferencesModel.findOne({ user: user._id }).exec();
@@ -104,12 +104,12 @@ async function getMail() {
                     const endDate = new Date();
                     endDate.setDate(endDate.getDate() - intervalValue + 1);
     
-                    console.log('Deleting mails older than:', endDate.toISOString().split('T')[0]);
+                    //console.log('Deleting mails older than:', endDate.toISOString().split('T')[0]);
 
-                    console.log('Deleting mails older than:', endDate.getTime());
+                    //console.log('Deleting mails older than:', endDate.getTime());
                     try {
                         await gmailEmailModel.deleteMany({ user: userId, internalDate: { $lt: endDate.getMilliseconds() } });
-                        console.log(`Mails deleted for user ID: ${userId}`);
+                        //console.log(`Mails deleted for user ID: ${userId}`);
                     } catch (error) {
                         console.error('Error deleting mails:', error);
                         continue;
@@ -120,7 +120,7 @@ async function getMail() {
                 }
             }
     
-            console.log('Job completed:', job.attrs.name);
+            //console.log('Job completed:', job.attrs.name);
         } catch (error) {
             console.error('Error deleting old mails:', error);
             throw error;
@@ -129,14 +129,14 @@ async function getMail() {
 
 // Start the Agenda service
 setTimeout(async function () { 
-    console.log('Agenda service starting...');
+    //console.log('Agenda service starting...');
     await agenda.start(); 
-    console.log('Agenda service started.');
+    //console.log('Agenda service started.');
 
     await agenda.every('10 minutes', 'getMail'); 
-    console.log('Job scheduled.');
+    //console.log('Job scheduled.');
     await agenda.every('0 23 * * *', 'deleteOldMails'); 
-    console.log('Job scheduled.');
+    //console.log('Job scheduled.');
 }, 5000);
 
 // Schedule the job

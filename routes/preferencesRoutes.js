@@ -24,19 +24,19 @@ router.post('/addmanypreferences/:participantId', async (req, res) => {
                     }
                 });
                 await preferences.save();
-                console.log('Updated Preferences:', preferences);
+                //console.log('Updated Preferences:', preferences);
                 res.status(200).json(preferences);
             } else {
                 const newPreferences = new preferenceModel({ user: user._id, preferences: newPreference });
                 await newPreferences.save();
-                console.log('Created Preferences:', newPreferences);
+                //console.log('Created Preferences:', newPreferences);
                 res.status(201).json(newPreferences);
             }
         } else {
             res.status(404).json({ error: 'User not found' });
         }
     } catch (error) {
-        console.log('Error:', error);
+        //console.log('Error:', error);
         res.status(500).json({ error: 'Failed to add preferences' });
     }
 });
@@ -70,34 +70,34 @@ router.post('/updatepreference/:participantId/:preferenceId', async (req, res) =
         if (user) {
             const preferenceId = req.params.preferenceId;
             const preferences = await preferenceModel.findOne({ user: user._id }).exec();
-            console.log('Preferences:', preferences);
+            //console.log('Preferences:', preferences);
             if (preferences) {
                 const preference = preferences.preferences.find(p => p._id.toString() === preferenceId);
-                console.log('Preference:', preference);
+                //console.log('Preference:', preference);
                 if (preference) {
                     preference.preferenceName = newPreference.preferenceName;
                     preference.valueName = newPreference.valueName;
                     preference.value = newPreference.value;
                     await preferences.save();
-                    console.log('Updated Preference:', preferences);
+                    //console.log('Updated Preference:', preferences);
                     res.status(200).json(preference);
                 } else {
                     preferences.preferences.push(newPreference);
                     await preferences.save();
-                    console.log('Added Preference:', newPreference);
+                    //console.log('Added Preference:', newPreference);
                     res.status(201).json(preferences);
                 }
             } else {
                 const newPreferences = new preferenceModel({ user: user._id, preferences: [newPreference] });
                 await newPreferences.save();
-                console.log('Created Preferences:', newPreferences);
+                //console.log('Created Preferences:', newPreferences);
                 res.status(201).json(newPreferences);
             }
         } else {
             res.status(404).json({ error: 'User not found' });
         }
     } catch (error) {
-        console.log('Error:', error);
+        //console.log('Error:', error);
         res.status(500).json({ error: 'Failed to add preference' });
     }
 });
@@ -118,19 +118,19 @@ router.post('/addonepreference/:participantId', async (req, res) => {
                     preferences.preferences.push(newPreference);
                 }
                 await preferences.save();
-                console.log('Updated Preferences:', preferences);
+                //console.log('Updated Preferences:', preferences);
                 res.status(200).json(preferences);
             } else {
                 const newPreferences = new preferenceModel({ user: user._id, preferences: [newPreference] });
                 await newPreferences.save();
-                console.log('Created Preferences:', newPreferences);
+                //console.log('Created Preferences:', newPreferences);
                 res.status(201).json(newPreferences);
             }
         } else {
             res.status(404).json({ error: 'User not found' });
         }
     } catch (error) {
-        console.log('Error:', error);
+        //console.log('Error:', error);
         res.status(500).json({ error: 'Failed to add preference' });
     }
 });

@@ -14,7 +14,7 @@ async function getRefreshTokenFromAuthCode(authCode) {
         );
 
         const { tokens } = await oAuth2Client.getToken(authCode);
-        console.log('Refresh Token Response:', tokens);
+        //console.log('Refresh Token Response:', tokens);
         
         return tokens.refresh_token;
     } catch (error) {

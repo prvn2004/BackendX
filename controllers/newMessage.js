@@ -1,90 +1,111 @@
 const Message = require('../models/messageModel');
-const gemini = require('../controllers/gemini');
-const run = require('../controllers/gemini');
+const { processMessage } = require('../controllers/gemini'); // Use a more descriptive name
 const userModel = require('../models/userModel');
-const preferencesModel = require('../models/preferencesModel');
 const getPreferencesByUser = require('../controllers/commonFunctions/getPreferencesByUser');
-const chatModel = require('../models/chatModel')
+const chatModel = require('../models/chatModel');
+
+// Error class for more structured error handling
+class ChatError extends Error {
+  constructor(message, code = 500) {
+    super(message);
+    this.name = 'ChatError';
+    this.code = code;
+  }
+}
 
 async function newMessage(req) {
   try {
-    const reqObj = JSON.parse(req); // Convert req to a JSON object
+    const reqObj = JSON.parse(req); // Get data from request body
 
-    console.log("New message received: ", reqObj.query);
     const participantId = reqObj.participantId;
     const user = await userModel.findOne({ useruid: participantId });
     if (!user) {
-      return { status: 404, message: { err: 'User not found' } };
-    }
-    const _id = user._id;
-
-    const chatId = reqObj.query.chatId;
-    let newChatId = chatId;
-    if (!chatId || chatId === "") {
-      // Create a new chat and get the generated chatId
-      const participantId = reqObj.participantId;
-      const newChat = await createNewChat(participantId);
-      newChatId = newChat.message._id;
+      throw new ChatError('User not found', 404);
     }
 
-    const newMessage = new Message({chatId: newChatId, content: reqObj.query.content, isBot: reqObj.query.isBot});
-    const savedMessage = await newMessage.save();
+    const chatId = await getOrCreateChat(participantId, reqObj.chatId);
 
-    let matchingValueBoolean = false;
-
-    const preferences = await getPreferencesByUser(user._id, "current_value");
-    if (!preferences) {
-      return { status: 404, message: { err: 'Preferences not found' } };
-    } else {
-      const matchingValue = preferences.value;
-      matchingValueBoolean = matchingValue === 'true';
-
-      console.log("gmail pref: ", matchingValueBoolean);
-    }
-
-    const geminiResponse = await run(savedMessage, matchingValueBoolean, _id);
-    if (!geminiResponse) {
-      return { status: 404, message: { err: 'Gemini response not found' } };
-    }
-
-    const botMessage = new Message({ chatId: newChatId, content: geminiResponse, isBot: true });
-    const savedbotMessage = await botMessage.save();
-
-    console.log(savedbotMessage);
-
-    return { status: 201, message: savedbotMessage };
-  } catch (err) {
-    console.log("Error saving message:", err)
-    return { status: 500, message: { err: err.message } };
-  }
-}
-
-async function createNewChat(participantId) {
-  try {
-    const user = await userModel.findOne({ useruid: participantId }).exec();
-    if (!user) return { status: 404, message: 'User not found' };
-
-    const newChat = new chatModel({
-      participant: user._id,
+    const newMessage = new Message({
+      chatId,
+      content: reqObj.query.content, // Access content directly from reqObj
+      isBot: reqObj.query.isBot,
     });
+    await newMessage.save();
 
-    const savedChat = await newChat.save();
-    console.log(savedChat);
-    
-    return { status: 201, message: savedChat };
+    const preferences = await getPreferencesByUser(user._id, 'current_value');
+    if (!preferences) {
+      throw new ChatError('Preferences not found', 404);
+    }
+
+    const useTools = preferences.value === 'true';
+
+    // Pass the message data to the gemini controller
+    const geminiResponse = await processMessage(
+      newMessage, 
+      user._id,
+      useTools
+    );
+
+    if (geminiResponse.error) {
+      throw new ChatError(geminiResponse.error, geminiResponse.code || 500);
+    }
+
+    const botMessage = new Message({
+      chatId,
+      content: geminiResponse.message, // Assuming the response is in geminiResponse.message
+      isBot: true,
+    });
+    await botMessage.save();
+
+    return { status: 201, message: botMessage };
   } catch (err) {
-      return { status: 500, message: err.message };
+    if (err instanceof ChatError) {
+      return { status: err.code, message: { err: err.message } };
+    } else {
+      console.error('Error processing new message:', err);
+      return { status: 500, message: { err: 'Internal server error' } };
+    }
   }
 }
 
-async function getAllMessages(chatId) {
+async function getOrCreateChat(participantId, chatId) {
   try {
-    const messages = await Message.find({ chatId: chatId }).exec();
-    console.log("All messages retrieved:", messages);
-    return { status: 201, messages };
+    if (chatId) {
+      // Check if a chat with the given ID exists and the user is a participant
+      const existingChat = await chatModel.findOne({ _id: chatId, participant: participantId });
+      if (existingChat) {
+        return chatId;
+      } else {
+        throw new ChatError('Invalid Chat ID', 400); // Bad Request
+      }
+    } else {
+      const user = await userModel.findOne({ useruid: participantId });
+      if (!user) {
+        throw new ChatError('User not found', 404);
+      }
+
+      const newChat = new chatModel({ participant: user._id });
+      const savedChat = await newChat.save();
+      return savedChat._id;
+    }
   } catch (err) {
-    console.error("Error retrieving messages:", err);
-    return { status: 500, messages: { err: err.message } };
+    if (err instanceof ChatError) {
+      throw err; // Re-throw if it's a ChatError
+    } else {
+      throw new ChatError('Error creating new chat', 500);
+    }
+  }
+}
+
+async function getAllMessages(req, res) {
+  try {
+    const chatId = req.params.chatId; // Get chatId from request parameters
+    const messages = await Message.find({ chatId }).exec();
+
+    res.status(200).json(messages);
+  } catch (err) {
+    console.error('Error retrieving messages:', err);
+    res.status(500).json({ error: 'Error retrieving messages' });
   }
 }
 

@@ -17,13 +17,13 @@ const getMessagesByDate = async (_id, useruid, query) => {
     if (!refreshToken) {
       throw new Error('Failed to get a refresh token');
     }
-    console.log('Refresh Token:', refreshToken);
+    //console.log('Refresh Token:', refreshToken);
 
     const accessToken = await getAccessToken(refreshToken);
     if (!accessToken) {
       throw new Error('Failed to get access token');
     }
-    console.log('Access Token:', accessToken);
+    //console.log('Access Token:', accessToken);
 
     oAuth2Client.setCredentials({
       refresh_token: refreshToken,
@@ -82,13 +82,13 @@ const getMessagesByDate = async (_id, useruid, query) => {
       };
 
       if (email.labelIds.includes('CATEGORY_PROMOTIONS')) {
-        console.log('Skipping saving mail with label CATEGORY_PROMOTIONS');
+        //console.log('Skipping saving mail with label CATEGORY_PROMOTIONS');
         continue;
       }
 
-      console.log('To:', to);
-      console.log('From:', from);
-      console.log('Subject:', subject);
+      //console.log('To:', to);
+      //console.log('From:', from);
+      //console.log('Subject:', subject);
 
       emails.push(email);
       } catch (error) {

@@ -9,11 +9,11 @@ async function getNotifications(_id) {
         const notifications = await PendingNotification.find({ user_id: _id });
 
         if (notifications.length === 0) {
-            console.log('No notifications found in MongoDB');
+            //console.log('No notifications found in MongoDB');
             return { code: 404, message: "No notifications found in MongoDB" };
         }
 
-        console.log('Notifications retrieved from MongoDB:', notifications);
+        //console.log('Notifications retrieved from MongoDB:', notifications);
 
         // Return the list of notifications
         return { code: 201, message: notifications };
@@ -32,7 +32,7 @@ async function addNotification(notification) {
         // Save the notification to MongoDB
         await newNotification.save();
 
-        console.log('Notification added to MongoDB:', newNotification);
+        //console.log('Notification added to MongoDB:', newNotification);
 
         // Return success message
         return { code: 201, message: "Notification added to MongoDB" };
@@ -49,11 +49,11 @@ async function deleteNotifications(_id) {
         const result = await PendingNotification.deleteMany({ user_id: _id });
 
         if (result.deletedCount === 0) {
-            console.log('No notifications found in MongoDB');
+            //console.log('No notifications found in MongoDB');
             return { code: 404, message: "No notifications found in MongoDB" };
         }
 
-        console.log('Notifications deleted from MongoDB:', result);
+        //console.log('Notifications deleted from MongoDB:', result);
 
         // Return success message
         return { code: 200, message: "Notifications deleted from MongoDB" };

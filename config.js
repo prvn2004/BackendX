@@ -21,6 +21,7 @@ const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
 const generalConfig = {
     maxPasses: parseInt(process.env.MAX_PASSES) || 5,
+    max_tokens : 99000
 };
 
 const driver = neo4j.driver(neo4jConfig.uri, neo4j.auth.basic(neo4jConfig.user, neo4jConfig.password));

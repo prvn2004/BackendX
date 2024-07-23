@@ -19,7 +19,7 @@ router.post('/', async (req, res) => {
     });
 
     const savedChat = await newChat.save();
-    console.log(savedChat);
+    //console.log(savedChat);
     
     res.status(201).json(savedChat);
   } catch (err) {
@@ -35,7 +35,7 @@ router.get('/:participantId', async (req, res) => {
     if (!user) return res.status(404).json({ message: 'User not found' });
 
     const chats = await Chat.find({ participant: user._id });
-    // console.log(chats)
+    // //console.log(chats)
     res.json(chats);
   } catch (err) {
     res.status(500).json({ error: err.message });

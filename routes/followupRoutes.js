@@ -11,7 +11,7 @@ const router = express.Router();
 // GET all followupModels by participantId
 router.get('/getall/:participantId', async (req, res) => {
     try {
-        console.log('GET /getall/:participantId')
+        //console.log('GET /getall/:participantId')
         const participantId = req.params.participantId;
         const user = await userModel.findOne({ useruid: participantId }).exec();
         const followupModels = await followupsModel.find({ participant: user._id });

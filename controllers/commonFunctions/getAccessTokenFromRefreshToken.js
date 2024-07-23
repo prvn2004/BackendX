@@ -15,7 +15,7 @@ async function getAccessTokenFromRefreshToken(refreshToken){
         if (err) {
             reject(err);
         } else {
-          console.log(tokens);
+          //console.log(tokens);
             resolve(tokens);
         }
     });

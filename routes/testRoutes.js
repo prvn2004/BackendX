@@ -9,7 +9,8 @@ const getRefreshTokenFromAuthCode = require('../controllers/getRefreshTokenFromA
 const {processInstruction , passThroughClassifyMails, shouldFollowuped} = require('../controllers/gemini/classifyFollowup');
 
 const sendChatNotification = require('../firebase/sendNotification');
-const {processData} = require('../controllers/gemini/geminiAutomationLib/autmation');
+const {processData} = require('../controllers/gemini/geminiAutomationLib/automation');
+const {newMessage} = require('../controllers/newMessage');
 
 const router = express.Router();
 router.use(express.json());
@@ -32,7 +33,7 @@ router.post('/getaccesstoken', async (req, res) => {
 
     try {
 
-        // console.log("new test" + participantId)
+        // //console.log("new test" + participantId)
         // Get user from userModel using participantId
         // const user = await User.findOne({ useruid: req.body.participantId });
 
@@ -77,7 +78,7 @@ router.post('/classifyfollowup', async (req, res) => {
 
         const email2 = req.body.email2;
 
-        console.log(email2)
+        //console.log(email2)
 
         const useruid = "T91iN72VnicpJDES3r2bM6TJQ9j1"
 
@@ -118,18 +119,34 @@ router.post('/getrefreshtoken', async (req, res) => {
 
         res.send(refreshToken);
     } catch (error) {
-        console.log(JSON.parse(JSON.stringify(error)));
+        //console.log(JSON.parse(JSON.stringify(error)));
         res.status(500).send('Internal Server Error');
     }
 });
 
-router.post('/automation', async (req, res) => {
+router.post('/newMessage', async (req, res) => {
     try {
-        const input = req.body.input
+        // const input = req.body.input
 
-        const results = await processData("AUTOMATION_PROMPT", input, null, 0, null);
+        const messageData = {
+            "participantId": "T91iN72VnicpJDES3r2bM6TJQ9j1", 
+            "query": {
+              "chatId": "",
+              "content": "hey bro",
+              "isBot": false
+            }
+          };
 
-        res.status(201).send(results);
+
+        const messageString = JSON.stringify(messageData);
+
+        const responsei = await newMessage(messageString);
+
+        // const Main_prompt = instruction.TESTING;
+
+        // const results = await processData(Main_prompt, input, null, 0, null);
+
+        res.status(201).send(responsei);
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');

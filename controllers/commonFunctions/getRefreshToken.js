@@ -5,22 +5,22 @@ const getRefreshTokenFromAuthCode = require('../getRefreshTokenFromAuthCode');
 async function getRefreshToken(_id) {
     try {
         const token = await tokenModel.findOne({ user:  _id}).exec();
-        console.log("token" + token);
+        //console.log("token" + token);
         let newRefreshToken;
 
         if (!token) {
-            console.log('Token not found, trying to get new token using auth code');
+            //console.log('Token not found, trying to get new token using auth code');
             const authCodei = await oauthModel.findOne({ user: _id }).exec();
-            console.log("authCode" + authCodei);
+            //console.log("authCode" + authCodei);
             if (!authCodei) {
-                console.log('Auth code not found');
+                //console.log('Auth code not found');
                 throw new Error('Auth code not found');
             }
             newRefreshToken = await getRefreshTokenFromAuthCode(authCodei.authCode);
 
             return newRefreshToken;
         }
-        console.log('Refresh Token:', token.refreshToken);
+        //console.log('Refresh Token:', token.refreshToken);
 
         return token.refreshToken;
     } catch (error) {

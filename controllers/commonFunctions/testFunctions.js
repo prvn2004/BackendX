@@ -46,7 +46,7 @@ const refreshToken = '1//0gKD5dMMTIY86CgYIARAAGBASNwF-L9IrgDhiBtKL27C6AXqXLDyAS0
 
 getToken(clientId, clientSecret, refreshToken)
   .then(tokenData => {
-    console.log('Token data:', tokenData);
+    //console.log('Token data:', tokenData);
   })
   .catch(error => {
     console.error('Error fetching token:', error);

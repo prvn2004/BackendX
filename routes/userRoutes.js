@@ -14,7 +14,7 @@ router.use(express.json());
 
 router.post('/', async (req, res) => {
   try {
-    console.log(req.body);
+    //console.log(req.body);
     const existingUser = await User.findOne({ useremail: req.body.useremail });
     if (existingUser) {
       return res.status(201).json(existingUser);
@@ -55,7 +55,7 @@ router.put('/:participantId', async (req, res) => {
     const { participantId } = req.params;
     const { body } = req;
 
-    console.log(participantId, body);
+    //console.log(participantId, body);
 
     const updatedUser = await User.findOneAndUpdate({ useruid: participantId }, body, { new: true });
 

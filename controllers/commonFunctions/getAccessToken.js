@@ -16,12 +16,12 @@ async function getAccessTokenFromRefreshToken(refreshToken){
 
         oAuth2Client.refreshAccessToken((err, tokens) => {
           if (err) {
-            console.log('Error refreshing access token:', err);
+            //console.log('Error refreshing access token:', err);
             return;
           }
         
           // The new access token is now available in `tokens.access_token`
-          console.log('New access token:', tokens.access_token);
+          //console.log('New access token:', tokens.access_token);
         });
         reject(err);
         return;

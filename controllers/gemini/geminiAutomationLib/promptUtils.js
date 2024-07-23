@@ -1,27 +1,14 @@
 const instructions = require('../instructions');
 
-const buildPrompt = (promptNeeded, inputData, tools, userId = null, passCount, previousResponse = null) => {
+const buildPrompt = (promptNeeded = "", inputData) => {
 
-    console.log('Building prompt...');
-    console.log('Prompt needed:', promptNeeded);
-    console.log('Input data:', inputData);
-    console.log('Available tools:', tools);
-    console.log('User ID:', userId);
-    console.log('Pass count:', passCount);
+    //console.log('Building prompt...');
+    //console.log('Prompt needed:', promptNeeded);
+    //console.log('Input data:', inputData);
 
-    let prompt = instructions.TEST_PROMPT + `\nCurrent Data: ${JSON.stringify(inputData)}`;
+    let prompt = `\n${promptNeeded + `\n User Query : \n` + JSON.stringify(inputData)}`;
 
-    // let prompt = instructions.TEST_PROMPT + `\nCurrent Data: ${JSON.stringify(inputData)}
-    //               Available Tools: ${tools.join(', ')}
-    //               UserId: ${userId}
-    //               Pass Count: ${passCount}`;
-
-    if (previousResponse) {
-        console.log('Previous response:', previousResponse);
-        prompt += `\nPrevious Response: ${JSON.stringify(previousResponse)}`;
-    }
-
-    console.log('Prompt built:', prompt);
+    //console.log('Prompt built:', prompt);
     return prompt;
 };
 

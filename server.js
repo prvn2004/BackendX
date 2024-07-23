@@ -7,15 +7,12 @@ const { Server } = require('socket.io');
 const { createServer } = require('node:http');
 const newMessage = require('./controllers/newMessage');
 const {initSockets} = require('./controllers/commonFunctions/Socket/initSockets');
-
+const cors = require('cors');
 
 const server = createServer(app);
 const io = new Server(server);
 
-mongoose.connect("mongodb+srv://prvn:prvn2004@mernapp.wh18ryw.mongodb.net/?retryWrites=true&w=majority", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
+mongoose.connect("mongodb+srv://prvn:prvn2004@mernapp.wh18ryw.mongodb.net/?retryWrites=true&w=majority")
     .then(() => {
         console.log('Connected to MongoDB');
     })
@@ -27,6 +24,7 @@ app.get('/', (req, res) => {
     res.sendStatus(200);
 });
 
+app.use(cors());
 app.use('/user', userRoutes);
 app.use('/chat', require('./routes/chatRoutes'));
 app.use('/message', require('./routes/messageRoutes'));
@@ -34,6 +32,7 @@ app.use('/oauth2code', require('./routes/authCodeRoutes'));
 app.use('/test', require('./routes/testRoutes'));
 app.use('/preferences', require('./routes/preferencesRoutes'));
 app.use('/followup', require('./routes/followupRoutes'));
+app.use('/web', require('./routes/webRoutes'));
 
 io.on('connection', (socket) => {
     console.log('a user connected');

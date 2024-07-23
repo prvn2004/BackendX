@@ -12,7 +12,7 @@ router.use(express.json());
 // Create a message
 router.post('/', async (req, res) => {
   try {
-    console.log("New message received: ", req.body.query);
+    //console.log("New message received: ", req.body.query);
     const participantId = req.body.participantId;
     const user = await userModel.findOne({ useruid: participantId });
     if (!user) {
@@ -32,12 +32,12 @@ router.post('/', async (req, res) => {
       const matchingPreference = preferences.preferences.find(preference => preference.valueName === "current_value");
       if (!matchingPreference) {
         matchingValueBoolean = false;
-        console.log("Matching preference not found");
+        //console.log("Matching preference not found");
       } else {
         const matchingValue = matchingPreference.value;
         matchingValueBoolean = matchingValue === 'true';
 
-        console.log("gmail pref: ", matchingValueBoolean);
+        //console.log("gmail pref: ", matchingValueBoolean);
       }
     }
 
@@ -49,15 +49,15 @@ router.post('/', async (req, res) => {
     const botMessage = new Message({ chatId: req.body.query.chatId, content: geminiResponse, isBot: true });
     const savedbotMessage = await botMessage.save();
 
-    console.log(savedbotMessage);
+    //console.log(savedbotMessage);
 
     // Find the chat and update the messages reference array
     const chat = await ChatModel.findOne({id : req.body.query.chatId}).exec();
     if (!chat) {
-      console.log("Chat not found");
+      //console.log("Chat not found");
       return res.status(404).json({ message: 'Chat not found' });
     }
-    console.log("Chat found: ", savedMessage._id, savedbotMessage._id);
+    //console.log("Chat found: ", savedMessage._id, savedbotMessage._id);
     chat.messages.push(savedMessage._id);
     chat.messages.push(savedbotMessage._id);
     await chat.save();

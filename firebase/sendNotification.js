@@ -10,7 +10,7 @@ async function sendChatNotification(userId, chatnotificationCategory, messageDat
 
     const userToken = await getFcmTokenByID(userId)
 
-    console.log("User Token", userToken)
+    //console.log("User Token", userToken)
 
     const [chatTemplateData] = await Promise.all([
         chatTemplatePlaceholder(type, template, messageData, userId)
@@ -24,11 +24,11 @@ async function sendChatNotification(userId, chatnotificationCategory, messageDat
         },
     }
 
-    console.log("Message", message)
+    //console.log("Message", message)
 
     try{
         const response = await firebase.messaging().send(message)
-        console.log("Successfully sent message", response)
+        //console.log("Successfully sent message", response)
     }
     catch(error){
         console.error("Error sending message", error)
