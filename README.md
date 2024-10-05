@@ -2,6 +2,8 @@ Android Application Github Repository -> https://github.com/prvn2004/Project24
 
 # BackendX
 
+Auto AI generated project description
+
 **Building an LLM-based AI backend pipeline to process user data, automate follow-ups, summarize, and enable AI-powered personal data queries.**
 
 **Technologies:** Node.js, Android, MongoDB, Google OAuth, Agenda, Socket.io, Firebase Cloud Messaging (FCM)
@@ -58,6 +60,6 @@ The backend pipeline is built using Node.js and integrates with various technolo
 
 ## Future Development
 
-* **Integration with specific LLMs:** Connect the pipeline to powerful LLMs like GPT-3 or BERT for advanced language processing capabilities.
+* **Integration with specific LLMs:** Connect the pipeline to powerful LLMs like GPT-4o and Whisper for voice command.
 * **Enhanced User Interface:** Develop a user-friendly interface (e.g., web or mobile app) to interact with the AI assistant, submit data, and view results.
 * **Expansion of AI Capabilities:**  Implement more sophisticated AI functionalities, like personalized recommendations, sentiment analysis, or automated task completion based on user data and LLM insights.
