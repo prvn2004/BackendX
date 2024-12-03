@@ -30,3 +30,4 @@ jobs:
     - run: |
         touch  .env
         echo "${{ secrets.PROJECT24_ENV}}" > .env
+    - run: pm2 restart project24
