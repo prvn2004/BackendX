@@ -12,7 +12,7 @@ router.use(express.json());
 // Create a message
 router.post('/', async (req, res) => {
   try {
-    //console.log("New message received: ", req.body.query);
+    console.log("New message received: ", req.body.query);
     const participantId = req.body.participantId;
     const user = await userModel.findOne({ useruid: participantId });
     if (!user) {
@@ -32,12 +32,12 @@ router.post('/', async (req, res) => {
       const matchingPreference = preferences.preferences.find(preference => preference.valueName === "current_value");
       if (!matchingPreference) {
         matchingValueBoolean = false;
-        //console.log("Matching preference not found");
+        console.log("Matching preference not found");
       } else {
         const matchingValue = matchingPreference.value;
         matchingValueBoolean = matchingValue === 'true';
 
-        //console.log("gmail pref: ", matchingValueBoolean);
+        console.log("gmail pref: ", matchingValueBoolean);
       }
     }
 
